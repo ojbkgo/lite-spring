@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Lite Spring Bean配置文件示例
+    这是第一阶段要实现的XML配置方式
+    后续阶段会支持注解配置，逐步替代XML
+-->
+<beans>
+    <!-- 定义HelloService Bean -->
+    <bean id="helloService" 
+          class="com.litespring.demo.service.impl.HelloServiceImpl"
+          scope="singleton"
+          init-method="init"
+          destroy-method="destroy">
+    </bean>
+    
+    <!-- 定义HelloController Bean（暂时注释，等实现依赖注入后再启用） -->
+    <!--
+    <bean id="helloController" 
+          class="com.litespring.demo.controller.HelloController"
+          scope="singleton">
+        <property name="helloService" ref="helloService"/>
+    </bean>
+    -->
+</beans>
+
