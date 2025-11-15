@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 第一阶段测试用的XML配置文件 -->
+<beans>
+    <!-- 单例Bean（默认） -->
+    <bean id="helloService" 
+          class="com.litespring.test.v1.service.HelloService">
+    </bean>
+    
+    <!-- 原型Bean -->
+    <bean id="prototypeService" 
+          class="com.litespring.test.v1.service.HelloService"
+          scope="prototype">
+    </bean>
+    
+    <!-- 带初始化和销毁方法的Bean（第三阶段会用到） -->
+    <bean id="serviceWithLifecycle" 
+          class="com.litespring.test.v1.service.HelloService"
+          init-method="init"
+          destroy-method="destroy">
+    </bean>
+</beans>
+
