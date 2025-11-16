@@ -1,8 +1,6 @@
 package com.litespring.core.io;
 
-import com.litespring.core.BeanDefinition;
-import com.litespring.core.BeanDefinitionRegistry;
-import com.litespring.core.BeansException;
+import com.litespring.core.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,6 +24,14 @@ public class XmlBeanDefinitionReader {
     private static final String LAZY_INIT_ATTRIBUTE = "lazy-init";
     private static final String INIT_METHOD_ATTRIBUTE = "init-method";
     private static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
+    
+    // 第二阶段新增：property和constructor-arg相关常量
+    private static final String PROPERTY_ELEMENT = "property";
+    private static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
+    private static final String NAME_ATTRIBUTE = "name";
+    private static final String REF_ATTRIBUTE = "ref";
+    private static final String VALUE_ATTRIBUTE = "value";
+    private static final String TYPE_ATTRIBUTE = "type";
     
     private final BeanDefinitionRegistry registry;
     
@@ -115,8 +121,125 @@ public class XmlBeanDefinitionReader {
             bd.setDestroyMethodName(element.getAttribute(DESTROY_METHOD_ATTRIBUTE));
         }
         
+        // 第二阶段新增：解析property元素
+        parsePropertyElements(element, bd);
+        
+        // 第二阶段新增：解析constructor-arg元素
+        parseConstructorArgElements(element, bd);
+        
         // 注册BeanDefinition
         this.registry.registerBeanDefinition(id, bd);
+    }
+    
+    /**
+     * 解析property元素（第二阶段新增）
+     */
+    private void parsePropertyElements(Element beanElement, BeanDefinition bd) {
+        NodeList propertyNodes = beanElement.getElementsByTagName(PROPERTY_ELEMENT);
+        for (int i = 0; i < propertyNodes.getLength(); i++) {
+            Node node = propertyNodes.item(i);
+            if (node instanceof Element) {
+                Element propertyElement = (Element) node;
+                parsePropertyElement(propertyElement, bd);
+            }
+        }
+    }
+    
+    /**
+     * 解析单个property元素
+     */
+    private void parsePropertyElement(Element element, BeanDefinition bd) {
+        // 获取name属性
+        String name = element.getAttribute(NAME_ATTRIBUTE);
+        if (name == null || name.trim().isEmpty()) {
+            throw new BeansException("property元素必须指定name属性");
+        }
+        
+        // 获取ref或value属性
+        String ref = element.getAttribute(REF_ATTRIBUTE);
+        String value = element.getAttribute(VALUE_ATTRIBUTE);
+        
+        // ref和value不能同时存在，也不能都不存在
+        boolean hasRef = (ref != null && !ref.trim().isEmpty());
+        boolean hasValue = (value != null && !value.trim().isEmpty());
+        
+        if (hasRef && hasValue) {
+            throw new BeansException(
+                "property元素不能同时指定ref和value属性，name=" + name
+            );
+        }
+        
+        if (!hasRef && !hasValue) {
+            throw new BeansException(
+                "property元素必须指定ref或value属性，name=" + name
+            );
+        }
+        
+        // 创建PropertyValue
+        Object val;
+        if (hasRef) {
+            val = new RuntimeBeanReference(ref);
+        } else {
+            val = new TypedStringValue(value);
+        }
+        
+        PropertyValue pv = new PropertyValue(name, val);
+        bd.getPropertyValues().addPropertyValue(pv);
+    }
+    
+    /**
+     * 解析constructor-arg元素（第二阶段新增）
+     */
+    private void parseConstructorArgElements(Element beanElement, BeanDefinition bd) {
+        NodeList argNodes = beanElement.getElementsByTagName(CONSTRUCTOR_ARG_ELEMENT);
+        for (int i = 0; i < argNodes.getLength(); i++) {
+            Node node = argNodes.item(i);
+            if (node instanceof Element) {
+                Element argElement = (Element) node;
+                parseConstructorArgElement(argElement, bd);
+            }
+        }
+    }
+    
+    /**
+     * 解析单个constructor-arg元素
+     */
+    private void parseConstructorArgElement(Element element, BeanDefinition bd) {
+        // 获取ref或value属性
+        String ref = element.getAttribute(REF_ATTRIBUTE);
+        String value = element.getAttribute(VALUE_ATTRIBUTE);
+        String type = element.getAttribute(TYPE_ATTRIBUTE);
+        
+        // ref和value不能同时存在，但必须有一个
+        boolean hasRef = (ref != null && !ref.trim().isEmpty());
+        boolean hasValue = (value != null && !value.trim().isEmpty());
+        
+        if (hasRef && hasValue) {
+            throw new BeansException(
+                "constructor-arg元素不能同时指定ref和value属性"
+            );
+        }
+        
+        if (!hasRef && !hasValue) {
+            throw new BeansException(
+                "constructor-arg元素必须指定ref或value属性"
+            );
+        }
+        
+        // 创建ValueHolder
+        Object val;
+        if (hasRef) {
+            val = new RuntimeBeanReference(ref);
+        } else {
+            val = new TypedStringValue(value);
+        }
+        
+        ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(val);
+        if (type != null && !type.trim().isEmpty()) {
+            valueHolder.setType(type);
+        }
+        
+        bd.getConstructorArgument().addArgumentValue(valueHolder);
     }
 }
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 第二阶段测试用的XML配置文件 -->
+<beans>
+    <!-- ==================== Setter注入示例 ==================== -->
+    
+    <!-- Dao层 -->
+    <bean id="userDao" class="com.litespring.test.v2.dao.UserDaoImpl"/>
+    
+    <!-- Service层：Setter注入Bean引用和简单值 -->
+    <bean id="userService" class="com.litespring.test.v2.service.UserService">
+        <!-- 注入Bean引用 -->
+        <property name="userDao" ref="userDao"/>
+        <!-- 注入int值 -->
+        <property name="maxRetry" value="3"/>
+        <!-- 注入String值 -->
+        <property name="serviceName" value="UserService"/>
+    </bean>
+    
+    <!-- ==================== 构造器注入示例 ==================== -->
+    
+    <!-- 构造器注入 -->
+    <bean id="orderService" class="com.litespring.test.v2.service.OrderService">
+        <constructor-arg ref="userDao"/>
+        <constructor-arg value="100"/>
+    </bean>
+    
+    <!-- ==================== 循环依赖示例（Setter注入可以解决） ==================== -->
+    
+    <!-- A依赖B -->
+    <bean id="circularA" class="com.litespring.test.v2.CircularA">
+        <property name="circularB" ref="circularB"/>
+    </bean>
+    
+    <!-- B依赖A -->
+    <bean id="circularB" class="com.litespring.test.v2.CircularB">
+        <property name="circularA" ref="circularA"/>
+    </bean>
+</beans>
+

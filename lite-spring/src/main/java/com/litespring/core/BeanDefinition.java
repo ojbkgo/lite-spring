@@ -34,6 +34,16 @@ public class BeanDefinition {
      */
     private String destroyMethodName;
     
+    /**
+     * Bean的属性值集合（第二阶段新增）
+     */
+    private PropertyValues propertyValues = new PropertyValues();
+    
+    /**
+     * Bean的构造器参数（第二阶段新增）
+     */
+    private ConstructorArgument constructorArgument = new ConstructorArgument();
+    
     public BeanDefinition(String beanClassName) {
         this.beanClassName = beanClassName;
     }
@@ -84,6 +94,27 @@ public class BeanDefinition {
     
     public void setDestroyMethodName(String destroyMethodName) {
         this.destroyMethodName = destroyMethodName;
+    }
+    
+    /**
+     * 获取属性值集合
+     */
+    public PropertyValues getPropertyValues() {
+        return this.propertyValues;
+    }
+    
+    /**
+     * 获取构造器参数
+     */
+    public ConstructorArgument getConstructorArgument() {
+        return this.constructorArgument;
+    }
+    
+    /**
+     * 判断是否有构造器参数
+     */
+    public boolean hasConstructorArgumentValues() {
+        return !this.constructorArgument.isEmpty();
     }
 }
 
