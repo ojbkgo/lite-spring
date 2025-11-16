@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 第三阶段测试用的XML配置文件 -->
+<beans>
+    <!-- ==================== InitializingBean接口测试 ==================== -->
+    
+    <bean id="simpleBean" class="com.litespring.test.v3.SimpleBean">
+        <property name="name" value="TestBean"/>
+    </bean>
+    
+    <!-- ==================== DisposableBean接口测试 ==================== -->
+    
+    <bean id="disposableBean" class="com.litespring.test.v3.DisposableTestBean"/>
+    
+    <!-- ==================== 自定义init-method和destroy-method ==================== -->
+    
+    <bean id="customBean" 
+          class="com.litespring.test.v3.CustomInitDestroyBean"
+          init-method="myInit"
+          destroy-method="myDestroy"/>
+    
+    <!-- ==================== 完整生命周期测试 ==================== -->
+    
+    <bean id="lifecycleBean" 
+          class="com.litespring.test.v3.LifecycleBean"
+          init-method="customInit"
+          destroy-method="customDestroy">
+        <property name="property" value="test-value"/>
+    </bean>
+</beans>
+
