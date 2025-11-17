@@ -111,20 +111,46 @@ mvn compile exec:java -Dexec.mainClass="com.litespring.demo.DemoApplication"
 
 ## 🔧 当前实现状态
 
-### ✅ 已完成
+### ✅ 已完成（核心功能）
 
-- 项目骨架搭建
-- Maven多模块配置
-- 基础接口定义（BeanFactory、BeanDefinition等）
-- 文档和学习路线规划
+**第一阶段：IoC容器基础**
+- BeanFactory、BeanDefinition
+- XML配置解析
+- Bean的创建和获取
+- 单例Bean缓存
 
-### 🚧 进行中
+**第二阶段：依赖注入**
+- Setter注入和构造器注入
+- Bean引用和简单值注入
+- **三级缓存解决循环依赖** ⭐
+- 类型转换
 
-- 第一阶段：IoC容器基础实现
+**第三阶段：Bean生命周期**
+- InitializingBean和DisposableBean接口
+- init-method和destroy-method
+- **BeanPostProcessor扩展点** ⭐
+- Aware接口（BeanNameAware、BeanFactoryAware）
 
-### 📋 计划中
+**第四阶段：注解驱动**
+- @Component、@Service、@Repository、@Controller
+- @Autowired自动装配
+- @Value值注入
+- @Configuration和@ComponentScan
+- AnnotationConfigApplicationContext
 
-- 所有后续阶段（见学习路线图）
+**第五阶段：AOP**
+- JDK动态代理
+- Pointcut切点
+- Before/After/Around通知
+- 拦截器链
+- 自动代理创建
+
+### 📋 可选阶段
+
+- 第六阶段：MVC框架
+- 第七阶段：数据访问
+- 第八阶段：事务管理
+- 第九阶段：自动配置
 
 ## 📚 核心概念
 
