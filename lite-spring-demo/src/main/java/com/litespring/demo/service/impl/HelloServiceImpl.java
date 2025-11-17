@@ -1,30 +1,28 @@
 package com.litespring.demo.service.impl;
 
+import com.litespring.annotation.Service;
 import com.litespring.demo.service.HelloService;
 
 /**
  * Hello服务实现类
- * 
- * 注意：这是目标代码，当前lite-spring还未实现相关注解
- * 将在后续迭代中逐步实现
+ * 使用@Service注解
  * 
  * @author lite-spring
  */
-// @Service
+@Service("helloService")  // 使用注解代替XML配置
 public class HelloServiceImpl implements HelloService {
     
     @Override
     public String greet(String name) {
-        return "Hello, " + name + "! Welcome to Lite Spring Framework.";
+        return "Hello, " + name + "! Welcome to Lite Spring Framework (Annotation-Driven).";
     }
     
-    // 生命周期方法示例
+    // 生命周期方法
     public void init() {
-        System.out.println("HelloService初始化完成");
+        System.out.println("HelloService初始化完成（注解驱动）");
     }
     
     public void destroy() {
-        System.out.println("HelloService销毁");
+        System.out.println("HelloService销毁（注解驱动）");
     }
 }
-
